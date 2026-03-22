@@ -96,6 +96,21 @@ Los agentes son las **instrucciones de subagentes especializados**. No se invoca
 
 ## Instalación
 
+### Desde GitHub (sin clonar)
+
+```bash
+# Instalar todo en el perfil de usuario
+curl -fsSL https://raw.githubusercontent.com/epicuro/custom-agent-claude-code/main/scripts/bootstrap.sh | bash -s -- --all --scope profile
+
+# Instalar solo un skill
+curl -fsSL https://raw.githubusercontent.com/epicuro/custom-agent-claude-code/main/scripts/bootstrap.sh | bash -s -- --skill python-project
+
+# Instalar solo un agente
+curl -fsSL https://raw.githubusercontent.com/epicuro/custom-agent-claude-code/main/scripts/bootstrap.sh | bash -s -- --agent prompt-validator
+```
+
+### Desde el repo clonado
+
 ```bash
 # Instalar todo en el perfil de usuario (disponible en todos los workspaces)
 ./scripts/install.sh --all --scope profile
@@ -108,6 +123,16 @@ Los agentes son las **instrucciones de subagentes especializados**. No se invoca
 
 # Ver todos los skills y agentes disponibles
 ./scripts/install.sh --list
+```
+
+### Desde otro repo (ruta relativa o absoluta)
+
+```bash
+# Desde un repo hermano
+../custom-agent-claude-code/scripts/install.sh --all --scope profile
+
+# Con ruta absoluta
+/path/to/custom-agent-claude-code/scripts/install.sh --skill node-project
 ```
 
 ### Destinos de instalación
