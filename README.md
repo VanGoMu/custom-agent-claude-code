@@ -2,7 +2,7 @@
 
 [![Release](https://img.shields.io/badge/release-v1.0.0-blue)](https://github.com/epicuro/custom-agent-claude-code/releases)
 [![Handoff Smoke CI](https://github.com/epicuro/custom-agent-claude-code/actions/workflows/handoff-install-smoke.yml/badge.svg)](https://github.com/epicuro/custom-agent-claude-code/actions/workflows/handoff-install-smoke.yml)
-[![License](https://github.com/VanGoMu/custom-agent-claude-code/blob/main/LICENSE)](LICENSE)
+[![License](https://img.shields.io/github/license/epicuro/custom-agents-vs-code)](https://github.com/VanGoMu/custom-agent-claude-code/blob/main/LICENSE)
 
 Colección de **skills y agentes** para Claude Code.
 
