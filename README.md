@@ -99,6 +99,9 @@ Los agentes son las **instrucciones de subagentes especializados**. No se invoca
 ### Desde GitHub (sin clonar)
 
 ```bash
+# Listar todos los agentes y skills disponibles
+curl -fsSL https://raw.githubusercontent.com/VanGoMu/custom-agent-claude-code/refs/heads/main/scripts/bootstrap.sh | bash -s -- --list
+
 # Instalar todo en el perfil de usuario
 curl -fsSL https://raw.githubusercontent.com/VanGoMu/custom-agent-claude-code/refs/heads/main/scripts/bootstrap.sh | bash -s -- --all --scope profile
 
