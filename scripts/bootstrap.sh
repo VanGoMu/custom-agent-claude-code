@@ -10,7 +10,7 @@
 # =============================================================================
 set -euo pipefail
 
-readonly REPO_OWNER="${REPO_OWNER:-epicuro}"
+readonly REPO_OWNER="${REPO_OWNER:-VanGoMu}"
 readonly REPO_NAME="${REPO_NAME:-custom-agent-claude-code}"
 readonly REPO_REF="${REPO_REF:-main}"
 readonly ARCHIVE_URL="https://github.com/${REPO_OWNER}/${REPO_NAME}/archive/refs/heads/${REPO_REF}.tar.gz"
