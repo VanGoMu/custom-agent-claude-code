@@ -1,0 +1,134 @@
+name: test install.sh
+
+on:
+  push:
+    paths:
+      - "scripts/install.sh"
+      - "skills/**"
+      - "agents/**"
+      - ".github/workflows/test-install.yml"
+  pull_request:
+    paths:
+      - "scripts/install.sh"
+      - "skills/**"
+      - "agents/**"
+      - ".github/workflows/test-install.yml"
+
+jobs:
+  test:
+    name: install.sh — ${{ matrix.scope }}
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:24.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        scope: [profile, repo]
+
+    steps:
+      - name: Install dependencies
+        run: apt-get update -qq && apt-get install -y -qq git
+
+      - uses: actions/checkout@v4
+
+      - name: Make script executable
+        run: chmod +x scripts/install.sh
+
+      # ── --list ─────────────────────────────────────────────────────────────
+      - name: list shows skills and agents
+        run: |
+          output="$(scripts/install.sh --list)"
+          echo "$output" | grep -q "Skills disponibles"
+          echo "$output" | grep -q "Agentes disponibles"
+          echo "$output" | grep -q "/langchain-project"
+          echo "$output" | grep -q "/crewai-project"
+          echo "$output" | grep -q "prompt-validator"
+
+      # ── --all ──────────────────────────────────────────────────────────────
+      - name: install all — scope ${{ matrix.scope }}
+        run: scripts/install.sh --all --scope ${{ matrix.scope }}
+
+      - name: all skills were installed — scope ${{ matrix.scope }}
+        run: |
+          if [[ "${{ matrix.scope }}" == "profile" ]]; then
+            dest="${HOME}/.claude/skills"
+          else
+            dest=".claude/skills"
+          fi
+          for f in skills/*.md; do
+            name="$(basename "$f")"
+            [[ -f "${dest}/${name}" ]] || { echo "FALTA: ${dest}/${name}"; exit 1; }
+          done
+
+      - name: all agents were installed — scope ${{ matrix.scope }}
+        run: |
+          if [[ "${{ matrix.scope }}" == "profile" ]]; then
+            dest="${HOME}/.claude/agents"
+          else
+            dest=".claude/agents"
+          fi
+          for f in agents/*.md; do
+            name="$(basename "$f")"
+            [[ -f "${dest}/${name}" ]] || { echo "FALTA: ${dest}/${name}"; exit 1; }
+          done
+
+      # ── --skill individual ─────────────────────────────────────────────────
+      - name: install single skill — scope ${{ matrix.scope }}
+        run: |
+          if [[ "${{ matrix.scope }}" == "profile" ]]; then
+            dest="${HOME}/.claude/skills"
+          else
+            dest=".claude/skills"
+          fi
+          # remove first to verify fresh install
+          rm -f "${dest}/shell-project.md"
+          scripts/install.sh --skill shell-project --scope ${{ matrix.scope }}
+          [[ -f "${dest}/shell-project.md" ]] || { echo "FALTA skill shell-project"; exit 1; }
+
+      # ── --agent individual ─────────────────────────────────────────────────
+      - name: install single agent — scope ${{ matrix.scope }}
+        run: |
+          if [[ "${{ matrix.scope }}" == "profile" ]]; then
+            dest="${HOME}/.claude/agents"
+          else
+            dest=".claude/agents"
+          fi
+          rm -f "${dest}/prompt-validator.md"
+          scripts/install.sh --agent prompt-validator --scope ${{ matrix.scope }}
+          [[ -f "${dest}/prompt-validator.md" ]] || { echo "FALTA agent prompt-validator"; exit 1; }
+
+      # ── backup on overwrite ────────────────────────────────────────────────
+      - name: backup is created on overwrite — scope ${{ matrix.scope }}
+        run: |
+          if [[ "${{ matrix.scope }}" == "profile" ]]; then
+            dest="${HOME}/.claude/skills"
+          else
+            dest=".claude/skills"
+          fi
+          scripts/install.sh --skill python-project --scope ${{ matrix.scope }}
+          # second install should produce a .bak file
+          scripts/install.sh --skill python-project --scope ${{ matrix.scope }}
+          bak_count=$(ls "${dest}/python-project.md.bak."* 2>/dev/null | wc -l)
+          [[ "$bak_count" -ge 1 ]] || { echo "No se creo backup en sobreescritura"; exit 1; }
+
+      # ── error paths ────────────────────────────────────────────────────────
+      - name: unknown skill exits with error
+        run: |
+          scripts/install.sh --skill no-existe --scope ${{ matrix.scope }} && exit 1 || true
+
+      - name: unknown agent exits with error
+        run: |
+          scripts/install.sh --agent no-existe --scope ${{ matrix.scope }} && exit 1 || true
+
+      - name: invalid scope exits with error
+        run: |
+          scripts/install.sh --skill shell-project --scope invalid && exit 1 || true
+
+      - name: no arguments exits with code 0 (usage)
+        run: |
+          scripts/install.sh && exit 1 || true
+
+      - name: unknown flag exits with error
+        run: |
+          scripts/install.sh --foo && exit 1 || true
