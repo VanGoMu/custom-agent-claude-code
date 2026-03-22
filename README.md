@@ -100,13 +100,13 @@ Los agentes son las **instrucciones de subagentes especializados**. No se invoca
 
 ```bash
 # Instalar todo en el perfil de usuario
-curl -fsSL https://raw.githubusercontent.com/epicuro/custom-agent-claude-code/main/scripts/bootstrap.sh | bash -s -- --all --scope profile
+curl -fsSL https://raw.githubusercontent.com/VanGoMu/custom-agent-claude-code/refs/heads/main/scripts/bootstrap.sh | bash -s -- --all --scope profile
 
 # Instalar solo un skill
-curl -fsSL https://raw.githubusercontent.com/epicuro/custom-agent-claude-code/main/scripts/bootstrap.sh | bash -s -- --skill python-project
+curl -fsSL https://raw.githubusercontent.com/VanGoMu/custom-agent-claude-code/refs/heads/main/scripts/bootstrap.sh | bash -s -- --skill python-project
 
 # Instalar solo un agente
-curl -fsSL https://raw.githubusercontent.com/epicuro/custom-agent-claude-code/main/scripts/bootstrap.sh | bash -s -- --agent prompt-validator
+curl -fsSL https://raw.githubusercontent.com/VanGoMu/custom-agent-claude-code/refs/heads/main/scripts/bootstrap.sh | bash -s -- --agent prompt-validator
 ```
 
 ### Desde el repo clonado
