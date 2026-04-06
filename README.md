@@ -32,6 +32,7 @@ Los skills son los **orquestadores user-invocables**. Se invocan con `/nombre` e
 | `node-project`      | `/node-project`      | Flujo TDD Node.js/TypeScript completo: paradigma + Jest/Vitest (RED) → implementación (GREEN) → DevOps                          |
 | `langchain-project` | `/langchain-project` | Flujo TDD LangChain completo: LCEL/Chains o Agent+Tools → contratos tipados → tests (RED) → implementación (GREEN) → DevOps     |
 | `crewai-project`    | `/crewai-project`    | Flujo TDD CrewAI completo: gate PromptValidator → crew secuencial/jerárquico → contratos → tests (RED) → implementación (GREEN) |
+| `ml-models-project` | `/ml-models-project` | Flujo TDD ML/AI completo: PyTorch + Transformers + Hugging Face → tests (RED) → training + inference (GREEN) → DevOps            |
 
 ---
 
@@ -92,6 +93,15 @@ Los agentes son las **instrucciones de subagentes especializados**. No se invoca
 | `crewai-test-engineer`     | Fases RED y VERIFY: doubles para LLM/tools/memory, cobertura >= 80%, Docker CI              |
 | `crewai-devops`            | CI local (pre-commit) y GitHub Actions dockerizada con gate ruff + mypy + pytest            |
 
+### ML/AI Models
+
+| Agente                    | Descripción                                                                             |
+| ------------------------- | --------------------------------------------------------------------------------------- |
+| `ml-models-organizer`     | Decide fine-tuning vs custom, scaffoldea src-layout para data/models/training/inference |
+| `ml-models-developer`     | Fase GREEN: implementa data pipelines, model (PyTorch+Transformers), training, evaluación |
+| `ml-models-test-engineer` | Fases RED y VERIFY: tests de dataset, modelo, training, evaluación de métricas >= 80%   |
+| `ml-models-devops`        | CI local (pre-commit) y GitHub Actions con Docker para training + serving (FastAPI)      |
+
 ---
 
 ## Instalación
@@ -149,6 +159,7 @@ curl -fsSL https://raw.githubusercontent.com/VanGoMu/custom-agent-claude-code/re
 
 ## Uso en Claude Code
 
+/ml-models-project  <- flujo TDD completo para modelos ML/AI (PyTorch, Transformers, Hugging Face)
 Una vez instalado, invoca los flujos con:
 
 ```
@@ -191,8 +202,8 @@ custom-agent-claude-code/
 │   ├── shell-project.md              # /shell-project
 │   ├── python-project.md             # /python-project
 │   ├── node-project.md               # /node-project
-│   ├── langchain-project.md          # /langchain-project
-│   └── crewai-project.md             # /crewai-project
+│   ├── crewai-project.md             # /crewai-project
+│   └── ml-models-project.md          # /ml-models-project
 ├── agents/                           # Instrucciones de subagentes
 │   ├── prompt-validator.md
 │   ├── project-planner.md
@@ -216,6 +227,11 @@ custom-agent-claude-code/
 │   ├── crewai-project-organizer.md
 │   ├── crewai-developer.md
 │   ├── crewai-test-engineer.md
+│   ├── crewai-devops.md
+│   ├── ml-models-organizer.md
+│   ├── ml-models-developer.md
+│   ├── ml-models-test-engineer.md
+│   └── ml-models-test-engineer.md
 │   └── crewai-devops.md
 └── scripts/
     └── install.sh
