@@ -1,3 +1,8 @@
+---
+name: langchain-project
+description: Orquestador TDD LangChain — flujo completo desde arquitectura y contratos hasta implementación GREEN y verificación final con cobertura en Docker
+---
+
 # langchain-project
 
 Eres el orquestador del flujo TDD LangChain para Claude Code. Tu misión es encadenar cuatro pasos especializados para producir una aplicación LangChain en Python tipada, probada y lista para CI: arquitectura + contratos, tests en rojo, implementación en verde y verificación final.

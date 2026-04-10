@@ -159,16 +159,16 @@ curl -fsSL https://raw.githubusercontent.com/VanGoMu/custom-agent-claude-code/re
 
 ## Uso en Claude Code
 
-/ml-models-project  <- flujo TDD completo para modelos ML/AI (PyTorch, Transformers, Hugging Face)
 Una vez instalado, invoca los flujos con:
 
 ```
-/init-project       <- inicializa cualquier proyecto nuevo
-/shell-project      <- flujo TDD completo para proyectos shell
-/python-project     <- flujo TDD completo para proyectos Python
-/node-project       <- flujo TDD completo para proyectos Node.js/TypeScript
-/langchain-project  <- flujo TDD completo para aplicaciones LangChain
-/crewai-project     <- flujo TDD completo para aplicaciones CrewAI
+/init-project        <- inicializa cualquier proyecto nuevo
+/shell-project       <- flujo TDD completo para proyectos shell
+/python-project      <- flujo TDD completo para proyectos Python
+/node-project        <- flujo TDD completo para proyectos Node.js/TypeScript
+/langchain-project   <- flujo TDD completo para aplicaciones LangChain
+/crewai-project      <- flujo TDD completo para aplicaciones CrewAI
+/ml-models-project   <- flujo TDD completo para modelos ML/AI (PyTorch, Transformers, Hugging Face)
 ```
 
 Claude Code leerá las instrucciones del skill y orquestará los subagentes automáticamente.
@@ -198,12 +198,13 @@ Los subagentes tienen acceso a todas las herramientas de Claude Code: `Bash`, `R
 custom-agent-claude-code/
 ├── README.md
 ├── skills/                           # Orquestadores user-invocables
-│   ├── init-project.md               # /init-project
-│   ├── shell-project.md              # /shell-project
-│   ├── python-project.md             # /python-project
-│   ├── node-project.md               # /node-project
-│   ├── crewai-project.md             # /crewai-project
-│   └── ml-models-project.md          # /ml-models-project
+│   ├── init-project/SKILL.md         # /init-project
+│   ├── shell-project/SKILL.md        # /shell-project
+│   ├── python-project/SKILL.md       # /python-project
+│   ├── node-project/SKILL.md         # /node-project
+│   ├── langchain-project/SKILL.md    # /langchain-project
+│   ├── crewai-project/SKILL.md       # /crewai-project
+│   └── ml-models-project/SKILL.md   # /ml-models-project
 ├── agents/                           # Instrucciones de subagentes
 │   ├── prompt-validator.md
 │   ├── project-planner.md
@@ -231,8 +232,7 @@ custom-agent-claude-code/
 │   ├── ml-models-organizer.md
 │   ├── ml-models-developer.md
 │   ├── ml-models-test-engineer.md
-│   └── ml-models-test-engineer.md
-│   └── crewai-devops.md
+│   └── ml-models-devops.md
 └── scripts/
     └── install.sh
 ```
@@ -242,11 +242,11 @@ custom-agent-claude-code/
 ## Añadir un nuevo agente
 
 1. Crea `agents/<nombre>.md` con las instrucciones del agente.
-2. Si es un orquestador user-invocable, crea también `skills/<nombre>.md`.
+2. Si es un orquestador user-invocable, crea `skills/<nombre>/SKILL.md` con frontmatter `name` y `description`.
 3. Actualiza este README con la tabla correspondiente.
 4. Instala con `./scripts/install.sh --agent <nombre>` o `--skill <nombre>`.
 
-### Plantilla de agente
+### Plantilla de agente (`agents/<nombre>.md`)
 
 ```markdown
 # NombreAgente
@@ -266,4 +266,17 @@ Herramientas disponibles: Bash, Read, Write, Edit, Glob, Grep.
 ## Respuesta al usuario
 
 ...
+```
+
+### Plantilla de skill (`skills/<nombre>/SKILL.md`)
+
+```markdown
+---
+name: nombre-del-skill
+description: Descripción corta — usada por Claude Code para decidir cuándo sugerir el skill
+---
+
+# nombre-del-skill
+
+Instrucciones del orquestador...
 ```

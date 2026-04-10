@@ -86,9 +86,9 @@ EOF
 # Returns:     0 siempre
 list_available() {
   echo ""
-  echo "Skills disponibles (~/~/.claude/skills/):"
-  for f in "${SKILLS_SRC}"/*.md; do
-    [[ -f "$f" ]] && printf "  /%s\n" "$(basename "$f" .md)"
+  echo "Skills disponibles (~/.claude/skills/):"
+  for d in "${SKILLS_SRC}"/*/; do
+    [[ -f "${d}SKILL.md" ]] && printf "  /%s\n" "$(basename "$d")"
   done
   echo ""
   echo "Agentes disponibles (~/.claude/agents/):"
@@ -137,17 +137,17 @@ install_file() {
   log "info" "Instalado: ${dest_file}"
 }
 
-# Descripcion: Instala un skill por nombre.
-# Args:        $1 - name (string): nombre del skill (sin .md)
+# Descripcion: Instala un skill por nombre. Crea <dest>/skills/<nombre>/SKILL.md.
+# Args:        $1 - name (string): nombre del skill (sin extensión)
 #              $2 - scope (string): 'profile' o 'repo'
 # Returns:     0 en éxito
 install_skill() {
   local name="$1"
   local scope="$2"
-  local src="${SKILLS_SRC}/${name}.md"
+  local src="${SKILLS_SRC}/${name}/SKILL.md"
   [[ -f "$src" ]] || die "Skill no encontrado: '${name}'. Verifica el nombre con --list."
   local dest_dir
-  dest_dir="$(resolve_dest_dir "skills" "$scope")"
+  dest_dir="$(resolve_dest_dir "skills" "$scope")/${name}"
   install_file "$src" "$dest_dir"
 }
 
@@ -175,8 +175,11 @@ install_all() {
   agents_dest="$(resolve_dest_dir "agents" "$scope")"
 
   log "info" "Instalando todos los skills en: ${skills_dest}"
-  for f in "${SKILLS_SRC}"/*.md; do
-    [[ -f "$f" ]] && install_file "$f" "$skills_dest"
+  for d in "${SKILLS_SRC}"/*/; do
+    [[ -f "${d}SKILL.md" ]] || continue
+    local skill_name
+    skill_name="$(basename "$d")"
+    install_file "${d}SKILL.md" "${skills_dest}/${skill_name}"
   done
 
   log "info" "Instalando todos los agentes en: ${agents_dest}"
@@ -187,8 +190,8 @@ install_all() {
   log "info" "Instalación completa."
   echo ""
   echo "Skills instalados — úsalos en Claude Code con:"
-  for f in "${SKILLS_SRC}"/*.md; do
-    [[ -f "$f" ]] && printf "  /%s\n" "$(basename "$f" .md)"
+  for d in "${SKILLS_SRC}"/*/; do
+    [[ -f "${d}SKILL.md" ]] && printf "  /%s\n" "$(basename "$d")"
   done
 }
 

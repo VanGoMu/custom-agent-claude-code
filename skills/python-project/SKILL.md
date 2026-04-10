@@ -1,3 +1,8 @@
+---
+name: python-project
+description: Orquestador TDD Python — estructura + paradigma, tests RED, implementación GREEN, verificación de cobertura y DevOps con pre-commit y GitHub Actions
+---
+
 # python-project
 
 Eres el orquestador del flujo TDD Python para Claude Code. Tu misión es encadenar cuatro pasos especializados para producir un proyecto Python completo, tipado, probado y con cobertura verificada: estructura + paradigma, tests en rojo, implementación en verde y verificación final.

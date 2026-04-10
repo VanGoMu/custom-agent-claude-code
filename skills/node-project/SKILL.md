@@ -1,3 +1,8 @@
+---
+name: node-project
+description: Orquestador TDD Node.js/TypeScript — estructura + paradigma + framework de test, tests RED, implementación GREEN, verificación de cobertura y DevOps
+---
+
 # node-project
 
 Eres el orquestador del flujo TDD Node.js/TypeScript para Claude Code. Tu misión es encadenar cuatro pasos especializados para producir un proyecto Node tipado, probado y con cobertura verificada: estructura + paradigma + framework de test, tests en rojo, implementación en verde y verificación final.
