@@ -32,7 +32,7 @@ Los skills son los **orquestadores user-invocables**. Se invocan con `/nombre` e
 | `node-project`      | `/node-project`      | Flujo TDD Node.js/TypeScript completo: paradigma + Jest/Vitest (RED) → implementación (GREEN) → DevOps                          |
 | `langchain-project` | `/langchain-project` | Flujo TDD LangChain completo: LCEL/Chains o Agent+Tools → contratos tipados → tests (RED) → implementación (GREEN) → DevOps     |
 | `crewai-project`    | `/crewai-project`    | Flujo TDD CrewAI completo: gate PromptValidator → crew secuencial/jerárquico → contratos → tests (RED) → implementación (GREEN) |
-| `ml-models-project` | `/ml-models-project` | Flujo TDD ML/AI completo: PyTorch + Transformers + Hugging Face → tests (RED) → training + inference (GREEN) → DevOps            |
+| `ml-models-project` | `/ml-models-project` | Flujo TDD ML/AI completo: PyTorch + Transformers + Hugging Face → tests (RED) → training + inference (GREEN) → DevOps           |
 
 ---
 
@@ -95,12 +95,12 @@ Los agentes son las **instrucciones de subagentes especializados**. No se invoca
 
 ### ML/AI Models
 
-| Agente                    | Descripción                                                                             |
-| ------------------------- | --------------------------------------------------------------------------------------- |
-| `ml-models-organizer`     | Decide fine-tuning vs custom, scaffoldea src-layout para data/models/training/inference |
+| Agente                    | Descripción                                                                               |
+| ------------------------- | ----------------------------------------------------------------------------------------- |
+| `ml-models-organizer`     | Decide fine-tuning vs custom, scaffoldea src-layout para data/models/training/inference   |
 | `ml-models-developer`     | Fase GREEN: implementa data pipelines, model (PyTorch+Transformers), training, evaluación |
-| `ml-models-test-engineer` | Fases RED y VERIFY: tests de dataset, modelo, training, evaluación de métricas >= 80%   |
-| `ml-models-devops`        | CI local (pre-commit) y GitHub Actions con Docker para training + serving (FastAPI)      |
+| `ml-models-test-engineer` | Fases RED y VERIFY: tests de dataset, modelo, training, evaluación de métricas >= 80%     |
+| `ml-models-devops`        | CI local (pre-commit) y GitHub Actions con Docker para training + serving (FastAPI)       |
 
 ---
 
@@ -134,6 +134,9 @@ curl -fsSL https://raw.githubusercontent.com/VanGoMu/custom-agent-claude-code/re
 # Instalar solo el agente shell-developer en el perfil de usuario
 ./scripts/install.sh --agent shell-developer
 
+# Instalar settings.json de Claude Code (desde template)
+./scripts/install.sh --install-settings
+
 # Ver todos los skills y agentes disponibles
 ./scripts/install.sh --list
 ```
@@ -156,6 +159,61 @@ curl -fsSL https://raw.githubusercontent.com/VanGoMu/custom-agent-claude-code/re
 | `repo`              | `.claude/skills/`   | `.claude/agents/`   |
 
 ---
+
+## Configuración de permisos (sin confirmaciones)
+
+Para evitar que Claude Code pida confirmación continuamente cuando ejecuten comandos, configura el archivo **`~/.claude/settings.json`** con una whitelist de operaciones preautorizadas.
+
+### Archivo de template
+
+Copia el archivo `settings.json.template` del repo:
+
+```bash
+cp settings.json.template ~/.claude/settings.json
+```
+
+O usa el script para instalarlo automáticamente:
+
+```bash
+./scripts/install.sh --install-settings
+```
+
+O crea manualmente `~/.claude/settings.json`:
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(ruff:*)",
+      "Bash(mypy:*)",
+      "Bash(pytest:*)",
+      "Bash(pip:*)",
+      "Bash(python:*)",
+      "Bash(python3:*)",
+      "Bash(git:*)",
+      "Bash(docker:*)",
+      "Bash(command -v:*)",
+      "Read(//**)",
+      "Write(//**)",
+      "Edit(//**)",
+      "Glob(//**)"
+    ]
+  }
+}
+```
+
+### Significado de los permisos
+
+- `Bash(comando:*)` — Ejecuta `comando` sin pedir confirmación (globbing con `*`)
+- `Read(//**)` — Lee cualquier archivo sin confirmar
+- `Write(//**)` — Crea/sobrescribe archivos sin confirmar
+- `Edit(//**)` — Edita archivos sin confirmar
+- `Glob(//**)` — Busca archivos/directorios sin confirmar
+
+### Scope
+
+- **Global**: Aplica a todos los skills y agentes en Claude Code
+- **No por-skill**: No hay forma de definir permisos específicos dentro de `.md`
 
 ## Uso en Claude Code
 

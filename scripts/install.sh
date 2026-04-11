@@ -19,12 +19,14 @@ readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 readonly SKILLS_SRC="${REPO_ROOT}/skills"
 readonly AGENTS_SRC="${REPO_ROOT}/agents"
+readonly SETTINGS_TEMPLATE="${REPO_ROOT}/settings.json.template"
 
 # ── configuración ─────────────────────────────────────────────────────────────
 SCOPE="${SCOPE:-profile}"
 TARGET_SKILL=""
 TARGET_AGENT=""
 INSTALL_ALL=false
+INSTALL_SETTINGS=false
 
 # ── funciones de utilidad ─────────────────────────────────────────────────────
 
@@ -57,6 +59,7 @@ Opciones:
   --skill <nombre>   Instala solo el skill especificado (sin extensión .md)
   --agent <nombre>   Instala solo el agente especificado (sin extensión .md)
   --all              Instala todos los skills y agentes
+  --install-settings Instala ~/.claude/settings.json desde settings.json.template
   --scope <scope>    Destino: 'profile' (default) o 'repo'
   -h, --help         Muestra esta ayuda
 
@@ -75,6 +78,9 @@ Ejemplos:
 
   # Instalar el agente shell-developer en el perfil de usuario
   ./scripts/install.sh --agent shell-developer
+
+  # Instalar settings.json de Claude Code (desde template)
+  ./scripts/install.sh --install-settings
 
   # Ver skills y agentes disponibles
   ./scripts/install.sh --list
@@ -165,6 +171,26 @@ install_agent() {
   install_file "$src" "$dest_dir"
 }
 
+# Descripcion: Instala ~/.claude/settings.json desde el template del repo.
+#              Hace backup si el archivo ya existe.
+# Returns:     0 en éxito
+install_settings() {
+  [[ -f "$SETTINGS_TEMPLATE" ]] || die "Template no encontrado: '${SETTINGS_TEMPLATE}'."
+  local dest_dir="${HOME}/.claude"
+  local dest_file="${dest_dir}/settings.json"
+
+  mkdir -p "$dest_dir"
+
+  if [[ -f "$dest_file" ]]; then
+    local backup="${dest_file}.bak.$(date '+%Y%m%d%H%M%S')"
+    log "warn" "Archivo existente — backup en: ${backup}"
+    cp "$dest_file" "$backup"
+  fi
+
+  cp "$SETTINGS_TEMPLATE" "$dest_file"
+  log "info" "Instalado: ${dest_file}"
+}
+
 # Descripcion: Instala todos los skills y agentes disponibles.
 # Args:        $1 - scope (string): 'profile' o 'repo'
 # Returns:     0 en éxito
@@ -211,6 +237,8 @@ main() {
         TARGET_AGENT="$2"; shift 2 ;;
       --all)
         INSTALL_ALL=true; shift ;;
+      --install-settings)
+        INSTALL_SETTINGS=true; shift ;;
       --scope)
         [[ -n "${2:-}" ]] || die "--scope requiere 'profile' o 'repo'."
         SCOPE="$2"; shift 2 ;;
@@ -223,6 +251,10 @@ main() {
     esac
   done
 
+  if [[ "$INSTALL_SETTINGS" == "true" ]]; then
+    install_settings
+  fi
+
   if [[ "$INSTALL_ALL" == "true" ]]; then
     install_all "$SCOPE"
   elif [[ -n "$TARGET_SKILL" ]]; then
@@ -231,6 +263,8 @@ main() {
   elif [[ -n "$TARGET_AGENT" ]]; then
     install_agent "$TARGET_AGENT" "$SCOPE"
     echo "Agente instalado en: $(resolve_dest_dir "agents" "$SCOPE")/${TARGET_AGENT}.md"
+  elif [[ "$INSTALL_SETTINGS" == "true" ]]; then
+    :
   else
     die "Debes especificar --skill, --agent o --all."
   fi
